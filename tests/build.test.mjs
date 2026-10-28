@@ -44,5 +44,5 @@ test('apps moved to appleapps subdomain: own build with back link, absolute main
  assert.match(read('index.html'),/href="https:\/\/appleapps\.dbaomarhuertasllc\.com\/"/);
 });
 test('home: scoped applications card lists what a build includes, with no made-up status',()=>{
- const h=read('index.html');assert.match(h,/class="incl"/);assert.doesNotMatch(h,/class="pipe|pipe-files/);for(const w of ['Tables and ACLs in scope','Flow Designer reviewed','Store validation ready','Update set captured','ATF suite passing','Docs and handover written'])assert.ok(!h.includes(w),w);
+ const h=read('index.html');assert.match(h,/class="ill ill-pipe"/);assert.doesNotMatch(h,/class="pipe|pipe-files/);for(const w of ['Tables and ACLs in scope','Flow Designer reviewed','Store validation ready','Update set captured','ATF suite passing','Docs and handover written'])assert.ok(!h.includes(w),w);
 });
