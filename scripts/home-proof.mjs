@@ -1,34 +1,5 @@
-// Home page proof sections (2026-10, design/proof-first): the "see it work" demo, the capability tiles and the proof strip.
-// Everything here is a labelled demo UI with sample data. No client names, no statistics, no testimonials.
 const chk=`<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5 6.5 11.5 12.5 5"/></svg>`;
-const STEPS=['Requested','Approved','Executed','Closed'];
-const rec=(n,{id,title,type,risk,win,owner,cis,checks,on})=>`<div class="rec${on?' on':''}" id="rec-${n}" role="tabpanel" aria-labelledby="tab-${n}" data-rec data-step="0">
-<div class="rec-h"><p class="mono rec-id">${id}</p><h3>${title}</h3><p class="rec-chips"><span class="chip">${type}</span><span class="chip ${risk[1]}">${risk[0]}</span></p></div>
-<ol class="stepper" aria-label="Change state">${STEPS.map((s,i)=>`<li${i===0?' class="cur"':''} data-s="${i}"><i>${chk}</i>${s}</li>`).join('')}</ol>
-<dl class="meta"><div><dt>Window</dt><dd>${win}</dd></div><div><dt>Assignment</dt><dd>${owner}</dd></div></dl>
-<div class="rec-cols"><div><p class="mini-h">Affected configuration items</p><ul class="ci">${cis.map(c=>`<li><span class="mono">${c[0]}</span><em>${c[1]}</em></li>`).join('')}</ul></div>
-<div><p class="mini-h">Pre-checks</p><ul class="pre">${checks.map(c=>`<li><span class="st"></span>${c}</li>`).join('')}</ul></div></div>
-<div class="rec-act"><button type="button" class="btn btn-primary btn-sm" data-adv>Run pre-checks</button><button type="button" class="btn btn-ghost btn-sm" data-reset hidden>Reset demo</button></div>
-<div class="audit"><p class="mini-h">Audit trail</p><ol class="audit-l" aria-live="polite"><li><span class="mono">00</span>Record created from a request (sample data)</li></ol></div>
-</div>`;
-export const DEMO=`<section id="demo" class="sec" aria-labelledby="demo-h"><div class="wrap">
-<div class="head reveal"><p class="eyebrow">See it work</p><h2 class="h-section" id="demo-h">Click through a change record</h2><p class="sub">The quality bar, hands on. A demo interface with sample data: pick a change, run the pre-checks, approve, execute, close. Every step lands in the audit trail.</p></div>
-<div class="demo reveal" data-demo>
-<div class="demo-bar"><i></i><i></i><i></i><span>Change workspace</span><b class="chip amber">Demo UI &middot; sample data</b></div>
-<div class="demo-body">
-<div class="demo-list" role="tablist" aria-label="Sample change records" aria-orientation="vertical">
-<button type="button" role="tab" id="tab-1" aria-selected="true" aria-controls="rec-1" class="on"><span class="mono">CHG-DEMO-101</span>Add a MID server for Discovery</button>
-<button type="button" role="tab" id="tab-2" aria-selected="false" aria-controls="rec-2" tabindex="-1"><span class="mono">CHG-DEMO-102</span>Rotate integration credentials</button>
-<button type="button" role="tab" id="tab-3" aria-selected="false" aria-controls="rec-3" tabindex="-1"><span class="mono">CHG-DEMO-103</span>Reclassify servers to CSDM classes</button>
-</div>
-<div class="demo-main">
-${rec(1,{id:'CHG-DEMO-101',title:'Add a MID server for Discovery',type:'Normal change',risk:['Moderate risk','amber'],win:'Saturday 06:00 &ndash; 08:00',owner:'Platform team (sample)',cis:[['mid-server-02','MID server'],['disco-schedule-weekly','Schedule'],['svc-inventory','Business service']],checks:['Credentials scoped to read-only','Firewall rule reviewed','Rollback step written','ATF suite green on sub-production'],on:true})}
-${rec(2,{id:'CHG-DEMO-102',title:'Rotate integration credentials',type:'Standard change',risk:['Low risk','green'],win:'Weekday 18:00 &ndash; 18:30',owner:'Integrations (sample)',cis:[['rest-spoke-billing','IntegrationHub spoke'],['cred-alias-erp','Credential alias'],['svc-orders','Business service']],checks:['New secret stored outside the instance export','Connection test passes','Previous secret kept for rollback','Owner notified'],on:false})}
-${rec(3,{id:'CHG-DEMO-103',title:'Reclassify servers to CSDM classes',type:'Normal change',risk:['Moderate risk','amber'],win:'Sunday 02:00 &ndash; 04:00',owner:'CMDB owners (sample)',cis:[['srv-app-014','Linux server'],['srv-db-003','Database host'],['svc-reporting','Business service']],checks:['Identification rules dry-run clean','Duplicate report reviewed','Reconciliation precedence confirmed','Snapshot taken for rollback'],on:false})}
-</div></div></div>
-<p class="note reveal">This is a built-for-the-page demo, not a client system and not a live instance. It shows how we think about a change: checks first, approval by a person, execution on the record, an audit trail at the end. <a href="/operations-platform.html">See Obvera, in development</a>.</p>
-</div></section>`;
-
+// Home page capability tiles and proof formats. No client names, no statistics, no testimonials.
 const ico={
  cmdb:`<svg viewBox="0 0 120 64"><path d="M60 12 28 34M60 12 60 34M60 12 92 34M28 34 16 54M28 34 40 54M60 34 60 54M92 34 80 54M92 34 104 54"/><circle class="c" cx="60" cy="12" r="6"/><circle cx="28" cy="34" r="4"/><circle cx="60" cy="34" r="4"/><circle cx="92" cy="34" r="4"/><circle cx="16" cy="54" r="3"/><circle cx="40" cy="54" r="3"/><circle cx="60" cy="54" r="3"/><circle cx="80" cy="54" r="3"/><circle cx="104" cy="54" r="3"/></svg>`,
  itam:`<svg viewBox="0 0 120 64"><rect x="8" y="10" width="30" height="44" rx="4"/><rect x="45" y="10" width="30" height="44" rx="4"/><rect class="f" x="82" y="10" width="30" height="44" rx="4"/><path d="M14 22h18M14 30h12M51 22h18M51 30h12M88 22h18M88 30h12"/><circle cx="23" cy="44" r="3"/><circle cx="60" cy="44" r="3"/><circle class="c" cx="97" cy="44" r="3"/></svg>`,

@@ -102,7 +102,7 @@
   syncBtns(); applyMotion();
 })();
 
-/* ============ HOME: stage pointer tilt + the "see it work" change-record demo (all sample data, no network) ============ */
+/* ============ HOME: stage pointer tilt ============ */
 (function(){
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-nomotion');
   var stage = document.querySelector('.stage');
@@ -111,26 +111,4 @@
     stage.addEventListener('pointermove', function(e){ var r = stage.getBoundingClientRect(); stage.style.setProperty('--tx', ((e.clientX-r.left)/r.width*2-1).toFixed(2)); stage.style.setProperty('--ty', ((e.clientY-r.top)/r.height*2-1).toFixed(2)); });
     stage.addEventListener('pointerleave', function(){ stage.style.setProperty('--tx',0); stage.style.setProperty('--ty',0); });
   }
-  var demo = document.querySelector('[data-demo]'); if(!demo) return;
-  var tabs = [].slice.call(demo.querySelectorAll('[role=tab]')), recs = [].slice.call(demo.querySelectorAll('[data-rec]'));
-  function show(i, focus){ tabs.forEach(function(t,j){ var on = i===j; t.setAttribute('aria-selected', on); t.tabIndex = on?0:-1; recs[j].classList.toggle('on', on); }); if(focus) tabs[i].focus(); }
-  tabs.forEach(function(t,i){
-    t.addEventListener('click', function(){ show(i); });
-    t.addEventListener('keydown', function(e){ var k = e.key, n = tabs.length; if(k==='ArrowDown'||k==='ArrowRight'){ e.preventDefault(); show((i+1)%n,1); } else if(k==='ArrowUp'||k==='ArrowLeft'){ e.preventDefault(); show((i+n-1)%n,1); } else if(k==='Home'){ e.preventDefault(); show(0,1); } else if(k==='End'){ e.preventDefault(); show(n-1,1); } });
-  });
-  var LABEL = ['Run pre-checks','Approve change','Execute in window','Close change'];
-  var LOG = ['Pre-checks passed (4 of 4)','Approved by the change manager (a person, not the model)','Executed in the window; result recorded on the record','Closed with review notes attached'];
-  recs.forEach(function(r){
-    var adv = r.querySelector('[data-adv]'), rst = r.querySelector('[data-reset]'), log = r.querySelector('.audit-l'), steps = r.querySelectorAll('.stepper li'), checks = r.querySelectorAll('.pre li'), step = 0, busy = false;
-    function paint(){ steps.forEach(function(s,i){ s.classList.toggle('done', i<step || step===4); s.classList.toggle('cur', i===step && step<4); }); }
-    function add(t){ var li = document.createElement('li'), n = log.children.length, s = document.createElement('span'); s.className='mono'; s.textContent = (n<10?'0':'')+n; li.appendChild(s); li.appendChild(document.createTextNode(t)); log.appendChild(li); }
-    function finish(){ step++; add(LOG[step-1]); paint(); if(step>=4){ adv.hidden = true; rst.hidden = false; rst.focus(); } else adv.textContent = LABEL[step]; busy = false; adv.disabled = false; }
-    adv.addEventListener('click', function(){
-      if(busy) return; busy = true; adv.disabled = true;
-      if(step===0){ var i = 0; (function next(){ if(i<checks.length){ checks[i++].classList.add('ok'); setTimeout(next, reduce?0:260); } else finish(); })(); }
-      else finish();
-    });
-    rst.addEventListener('click', function(){ step = 0; paint(); checks.forEach(function(c){ c.classList.remove('ok'); }); while(log.children.length>1) log.removeChild(log.lastChild); adv.hidden = false; adv.textContent = LABEL[0]; rst.hidden = true; adv.focus(); });
-    paint();
-  });
 })();

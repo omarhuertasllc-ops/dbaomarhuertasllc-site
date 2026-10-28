@@ -173,3 +173,10 @@ export function homeStrip(apps){
  if(!s)return '';
  return `<section class="uc-strip" aria-labelledby="uc-strip-h"><div class="wrap"><div class="uc-strip-in"><div class="uc-strip-txt"><span class="uc-chip">Latest on the ServiceNow Store</span><h2 id="uc-strip-h">${esc(s.name)}${s.store.version?' '+esc(s.store.version):''}</h2><p>${esc(s.tagline)}</p></div><div class="uc-cta">${primaryCta(s)}<a class="uc-btn uc-btn-o" href="/servicenow-apps.html">All Store apps</a></div></div></div></section>`;
 }
+
+// Home hero stage: the spotlight app's real hero screenshot in the tilted product frame; empty when there is none.
+export function homeStage(apps){
+ const s=spotlightApp(apps);
+ if(!s||!s.hero_image)return '';
+ return `<div class="stage"><div class="stage-glow" aria-hidden="true"></div><a class="stage-shot" href="${appUrl(s)}">${img(s,s.hero_image,s.hero_alt||s.name+' screenshot',{eager:true})}</a><div class="stage-fade" aria-hidden="true"></div></div>`;
+}
