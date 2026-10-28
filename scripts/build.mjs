@@ -17,9 +17,12 @@ const CITY='Greensboro, North Carolina';
 const STUDIO='https://webdesign.dbaomarhuertasllc.com/';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 import {DEMO,CAPS,PROOF} from './home-proof.mjs';
+import {loadApps,spotlightApp,snAppBody,snAppMeta,hubBody,homeStrip,homeAnnounce,listedApps,appUrl} from './snapps.mjs';
+export {spotlightApp};
+let SNAPPS=[]; // src/content/servicenow-apps.json, loaded before rendering
 const json=async n=>JSON.parse(await readFile(join(ROOT,'src/content',n+'.json'),'utf8'));
 
-const NAV=[['/services.html','ServiceNow'],[STUDIO,'Web Design'],['/apps.html','Apps'],['/about.html','About'],['/contact.html','Contact']];
+const NAV=[['/services.html','ServiceNow'],['/servicenow-apps.html','Store apps'],[STUDIO,'Web Design'],['/apps.html','Apps'],['/about.html','About'],['/contact.html','Contact']];
 const LAB=[['/operations-platform.html','Obvera','In development','IT operations with a change record behind every action.'],['/#albena','Albena','Coming soon','A private AI assistant for your own hardware.'],['/#agentgate','AgentGate','Research preview','Approval-bound AI agents, measured.']];
 const PAL=[['/services.html','ServiceNow services',''],['/apps.html','Apps, our App Store apps','iphone ipad mac ios'],['/industries.html','Industries',''],['/about.html','About, our story',''],['/servicenow-lexicon/','The ServiceNow Lexicon','96 chapters'],['/support.html','Support',''],['/contact.html','Contact',''],['/services.html#cmdb','CMDB and CSDM strategy','service'],['/services.html#itom','ITOM Discovery and Service Mapping','service'],['/services.html#integration','Integrations and Scripted REST APIs','service'],['/services.html#digital','Websites, apps and digital transformation','digital studio'],['/#story','Our story','home'],['/#tribute','Michael Lombardo tribute','home'],['/support.html#support-form','Open a support request','support'],['/security.html','Trust and security',''],['/privacy-policy.html','Privacy policy','legal'],['/terms.html','Terms and conditions','legal'],['/legal.html','Legal notices','legal'],['/accessibility.html','Accessibility statement',''],[STUDIO,'Web Design Studio','webdesign.dbaomarhuertasllc.com'],['/#albena','Albena, in development, coming soon','albena.ai'],['/operations-platform.html','Obvera, in development, coming soon','obvera platform'],['/#agentgate','AgentGate, research preview, coming soon','agentgate'],['https://albena.ai/waitlist','Join the Albena waitlist','albena.ai waitlist early access']];
 const MARK=(id,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="mk-${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6ee7b7"/><stop offset="1" stop-color="#059669"/></linearGradient><mask id="mkm-${id}"><rect width="32" height="32" fill="#fff"/><g stroke="#000" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M10 21.5 16 9l6 12.5"/><path d="M12.6 16.5h6.8"/></g></mask></defs><circle cx="16" cy="16" r="14" fill="url(#mk-${id})" mask="url(#mkm-${id})"/></svg>`;
@@ -32,7 +35,7 @@ const sec=(id,inner,opts={})=>`<section${id?` id="${id}"`:''} class="sec${opts.c
 const closing=(h2,p,label='Start a conversation',href='/contact.html')=>`<section class="sec cta-sec" aria-labelledby="cl-h"><div class="cta-glow" aria-hidden="true"></div><div class="wrap center"><h2 id="cl-h" class="h-section reveal">${h2}</h2><p class="sub reveal">${p}</p><div class="cta reveal">${btn(href,label,'btn btn-primary')}${btn('/services.html','See what we build','btn btn-ghost')}</div><a class="mail" href="mailto:${EMAIL}">${EMAIL}</a></div></section>`;
 
 // ----- the shell -----
-function page({path,title,description,body,script,bodyClass='',ogImage=`${ORIGIN}/assets/knowledge/k_2026_a.jpg`}){
+function page({path,title,description,body,script,css,bodyClass='',ogImage=`${ORIGIN}/assets/knowledge/k_2026_a.jpg`}){
  const url=ORIGIN+path.replace(/index\.html$/,'');
  const schema={"@context":"https://schema.org","@type":"ProfessionalService","name":"Omar Huertas LLC","url":ORIGIN,"email":EMAIL,"description":"Registered ServiceNow Build, Consulting & Implementation Partner: CMDB, ITAM, ITSM, ITOM, integrations, AI and automation, plus websites and custom applications.","founder":{"@type":"Person","name":"Omar Huertas"},"address":{"@type":"PostalAddress","addressLocality":"Greensboro","addressRegion":"NC","addressCountry":"US"},"sameAs":["https://www.linkedin.com/company/omar-huertas-llc","https://www.linkedin.com/in/omarhuertas"]};
  return `<!doctype html>
@@ -55,7 +58,7 @@ function page({path,title,description,body,script,bodyClass='',ogImage=`${ORIGIN
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/Geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/site.css">${css?`\n<link rel="stylesheet" href="/assets/${css}.css">`:''}
 <script type="application/ld+json">${JSON.stringify(schema).replace(/</g,'\\u003c')}</script>
 <script>document.documentElement.classList.add('js')</script>
 <script type="module" src="/assets/rt.js"></script>
@@ -95,7 +98,7 @@ function footer(path){
 <footer class="foot"><div class="foot-in">
 <div class="foot-brand"><a class="brand" href="/" aria-label="Omar Huertas LLC home">${MARK('foot',20)}<span>Omar Huertas LLC</span></a><p>Registered ServiceNow Build &amp; Consulting Partner. A web design studio. Makers of Obvera, Albena and AgentGate, all in development.</p><p class="fine">${CITY}. <a href="mailto:${EMAIL}">${EMAIL}</a></p></div>
 <nav class="fcols" aria-label="Footer">
-<div><h2>ServiceNow</h2><a href="/services.html">Services</a><a href="/services.html#cmdb">CMDB and CSDM</a><a href="/services.html#itom">ITOM and discovery</a><a href="/services.html#integration">Integrations</a><a href="/industries.html">Industries</a><a href="/servicenow-lexicon/">The ServiceNow Lexicon</a></div>
+<div><h2>ServiceNow</h2><a href="/services.html">Services</a><a href="/servicenow-apps.html">Store apps</a>${listedApps(SNAPPS).map(a=>`<a href="${appUrl(a)}">${esc(a.name)}</a>`).join('')}<a href="/services.html#cmdb">CMDB and CSDM</a><a href="/services.html#itom">ITOM and discovery</a><a href="/services.html#integration">Integrations</a><a href="/industries.html">Industries</a><a href="/servicenow-lexicon/">The ServiceNow Lexicon</a></div>
 <div><h2>In development</h2><a href="/operations-platform.html">Obvera ${stamp('In development')}</a><a href="/#albena">Albena ${stamp('Coming soon')}</a><a href="/#agentgate">AgentGate ${stamp('Research preview','acc')}</a><a href="https://albena.ai/waitlist" rel="noopener">Join the Albena waitlist</a></div>
 <div><h2>Company</h2><a href="/apps.html">Apps</a><a href="/about.html">About, our story</a><a href="${STUDIO}" rel="noopener">Web Design Studio</a><a href="/support.html">Support</a><a href="/contact.html">Contact</a><a href="https://www.linkedin.com/company/omar-huertas-llc" rel="noopener">LinkedIn</a></div>
 <div><h2>Trust and legal</h2><a href="/security.html">Trust and security</a><a href="/privacy-policy.html">Privacy policy</a><a href="/terms.html">Terms and conditions</a><a href="/legal.html">Legal notices</a><a href="/accessibility.html">Accessibility</a><a href="/sitemap.xml">Sitemap</a></div>
@@ -106,7 +109,7 @@ function footer(path){
 
 let LEX_PAL=[];
 function cmd(){
- const items=[['/','Home',''],...PAL,...LEX_PAL];
+ const items=[['/','Home',''],...PAL,['/servicenow-apps.html','ServiceNow Store apps','apps we build store'],...SNAPPS.map(a=>[appUrl(a),`${a.name}, ServiceNow app`,`${a.category} ${a.status.replace('_',' ')}`.toLowerCase()]),...LEX_PAL];
  return `<div id="cmd" popover data-island="palette" data-lazy="never"><div class="cmd-in"><div class="cmd-box"><label><span>Go to</span><input type="search" placeholder="Search pages, services, lexicon chapters" autocomplete="off" aria-label="Search pages and lexicon chapters"></label><ul role="list">${items.map(([h,t,m])=>`<li data-k="${esc((t+' '+m).toLowerCase())}"><a href="${h}">${esc(t)}<small>${esc(m)}</small></a></li>`).join('')}</ul><p class="cmd-empty" hidden>Nothing matches. Try a page name, a service or a ServiceNow term.</p><div class="cmd-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> move</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div></div></div></div>`;
 }
 
@@ -143,11 +146,12 @@ const BENTO=(links=true)=>{const L=(id,t)=>links?`<a class="stretch" href="/serv
 
 // ----- HOME -----
 function home(){
+ const ann=homeAnnounce(SNAPPS);
  const body=`<section class="hero" id="top">
 <div class="field" data-island="field" data-lazy="now" aria-hidden="true"><canvas></canvas></div>
 <div class="grid-bg" aria-hidden="true"></div>
 <div class="hero-in">
-<a class="announce reveal" href="/services.html"><span class="dot" aria-hidden="true"></span>Registered ServiceNow Build &amp; Consulting Partner</a>
+<a class="announce reveal" href="${ann.href}"><span class="dot" aria-hidden="true"></span>${ann.text}</a>
 <h1 class="h-display reveal">ServiceNow,<br class="br"> <span class="ul">built properly.</span></h1>
 <p class="lead reveal">Omar Huertas LLC designs and builds on the Now Platform: scoped applications, a CMDB you can trust, ITSM and ITOM that fit how your teams work, and integrations that survive the next upgrade.<span class="hide-s"> In scope, tested and documented before it goes live.</span></p>
 <div class="cta reveal">${btn('/contact.html','Free 30-minute architecture review','btn btn-primary')}${btn('#demo','See it work','btn btn-ghost')}</div>
@@ -167,6 +171,8 @@ function home(){
 <div class="stage-fade" aria-hidden="true"></div>
 </div>
 </section>
+
+${homeStrip(SNAPPS)}
 
 <section class="works" aria-label="What we work with"><div class="wrap"><p class="works-h">Working across the Now Platform</p><ul class="works-list"><li>Scoped applications</li><li>CMDB and CSDM</li><li>ITSM</li><li>ITOM and Discovery</li><li>IntegrationHub</li><li>Automated Test Framework</li><li>Store readiness</li><li><a href="/services.html">All services</a></li></ul></div></section>
 
@@ -202,7 +208,7 @@ ${sec('story',`<div class="split even"><div class="reveal"><p class="eyebrow">Ou
 
 ${TRIBUTE()}
 ${closing('Let&rsquo;s build something honest.','Start with a free 30-minute architecture review: bring a CMDB, integration or release problem and we will tell you plainly what we would do. No cost, no commitment.','Book the free review')}`;
- return page({path:'/index.html',bodyClass:'home',title:'Omar Huertas LLC | ServiceNow, built properly',description:'Omar Huertas LLC is a Registered ServiceNow Build & Consulting Partner: scoped apps, CMDB, ITSM, ITOM and integrations. Plus a web design studio, and three projects in development: Obvera, Albena and AgentGate.',body});
+ return page({path:'/index.html',bodyClass:'home',css:'snapps',title:'Omar Huertas LLC | ServiceNow, built properly',description:'Omar Huertas LLC is a Registered ServiceNow Build & Consulting Partner: scoped apps, CMDB, ITSM, ITOM and integrations. Plus a web design studio, and three projects in development: Obvera, Albena and AgentGate.',body});
 }
 
 // ----- the inner page opener -----
@@ -386,6 +392,12 @@ async function lexicon(){
  return page({path:'/servicenow-lexicon/index.html',script:'lexicon',title:'The ServiceNow Lexicon | Omar Huertas LLC',description:'What ServiceNow is, what it does, every acronym and module decoded, and why your company needs it. In plain English. A free guide by Omar Huertas LLC.',body,bodyClass:'doc-page'});
 }
 
+// ----- ServiceNow Store apps (data-driven) -----
+const snApp=a=>()=>{const m=snAppMeta(a);return page({path:appUrl(a),bodyClass:'p-uc',css:'snapps',title:m.title,description:m.description,body:snAppBody(a),...(m.ogImage?{ogImage:m.ogImage}:{})})};
+const snHub=()=>page({path:'/servicenow-apps.html',bodyClass:'p-uc',css:'snapps',title:'ServiceNow Store apps | Omar Huertas LLC',description:'Apps Omar Huertas LLC builds for the Now Platform, with honest status: on the ServiceNow Store, in certification review, or coming soon.',body:hubBody(SNAPPS)});
+SNAPPS=await loadApps(ROOT);
+await mkdir(join(ROOT,'servicenow'),{recursive:true});
+
 // ----- write everything -----
 const LEX=await lexicon();
 const out=[['index.html',home],['about.html',about],['services.html',services],['industries.html',industries],['apps.html',apps],['support.html',support],['contact.html',contact],['operations-platform.html',obvera],['security.html',security],['404.html',notFound],
@@ -393,6 +405,7 @@ const out=[['index.html',home],['about.html',about],['services.html',services],[
  ['privacy-policy.html',docPage({path:'/privacy-policy.html',file:'privacy-policy',kind:'Privacy policy',title:'Privacy Policy | Omar Huertas LLC',description:'How Omar Huertas LLC collects, uses, shares, and protects information across our website, our consulting and implementation services, and the applications we develop and publish.'})],
  ['terms.html',docPage({path:'/terms.html',file:'terms',kind:'Terms &amp; conditions',title:'Terms & Conditions | Omar Huertas LLC',description:'The terms that govern your use of the Omar Huertas LLC website, our consulting and implementation services, and our applications.'})],
  ['accessibility.html',docPage({path:'/accessibility.html',file:'accessibility',kind:'Accessibility',title:'Accessibility | Omar Huertas LLC',description:'Our accessibility commitment: WCAG 2.1 AA, keyboard support, captions, and a built-in accessibility toolbar.'})],
- ['servicenow-lexicon/index.html',()=>LEX]];
+ ['servicenow-lexicon/index.html',()=>LEX],
+ ['servicenow-apps.html',snHub],...SNAPPS.map(a=>[`servicenow/${a.slug}.html`,snApp(a)])];
 await mkdir(join(ROOT,'servicenow-lexicon'),{recursive:true});
 for(const [f,fn] of out){const html=await fn();if(/\bElite\b/.test(html))throw new Error(f+': "Elite" must not appear');if(/ style="/.test(html))throw new Error(f+': inline style');if(/Fraunces|serif/i.test(html.replace(/sans-serif/g,'')))throw new Error(f+': a serif face is named');await writeFile(join(ROOT,f),html);console.log('wrote',f,(html.length/1024).toFixed(0)+'KB')}

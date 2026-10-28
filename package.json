@@ -1,5 +1,19 @@
 {
-  "name": "dbaomarhuertasllc-site", "private": true, "type": "module",
-  "scripts": {"build": "node scripts/build.mjs && sh scripts/build-pages.sh", "test": "node --test tests/*.test.mjs", "check": "npm run build && npm test"},
-  "engines": {"node": ">=22"}
+  "name": "dbaomarhuertasllc-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs && sh scripts/build-pages.sh",
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run build && npm test",
+    "stage": "npm run check && wrangler deploy -c wrangler.staging.jsonc",
+    "promote": "sh scripts/promote.sh",
+    "store:sync": "node scripts/store-sync.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "wrangler": "^4.154.0"
+  }
 }

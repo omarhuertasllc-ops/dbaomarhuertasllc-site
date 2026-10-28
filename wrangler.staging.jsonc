@@ -1,0 +1,11 @@
+{
+  // Staging Worker for dbaomarhuertasllc.com. Deployed by `npm run stage` (and by scripts/store-sync.mjs when the Store
+  // data changes). Nothing reaches the live Worker until `npm run promote`. Never deploy wrangler.jsonc from the sync job.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dbaomarhuertasllc-site-staging",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "routes": [{"pattern":"staging.dbaomarhuertasllc.com","custom_domain":true}],
+  "preview_urls": false,
+  "assets": { "directory": "./dist", "html_handling": "auto-trailing-slash", "not_found_handling": "404-page" }
+}

@@ -1,0 +1,281 @@
+{
+  "_readme": "Source of truth for the ServiceNow Store apps shown on the site. Hand-edit the `app` blocks. The `store` blocks are written by scripts/store-sync.mjs from the live Store listing; do not edit them by hand. Order of the spotlight: the listed app with the newest store.certified_at wins; ties by `order`.",
+  "apps": [
+    {
+      "slug": "update-center",
+      "order": 1,
+      "name": "Update Center",
+      "scope": "x_omhu_updatecntr",
+      "category": "Platform operations",
+      "tagline": "Every instance. One update dashboard.",
+      "summary": "Manage store application updates across your entire ServiceNow estate from one dashboard: scan, review and install in guarded waves, with production-grade safety controls.",
+      "problem": "Platform teams that run more than one instance lose hours every cycle keeping store apps current: log in to each instance, open Application Manager, click Update one at a time. Updates get skipped, environments drift, and production changes land without proof from lower environments.",
+      "pricing": "Free",
+      "store_url": "https://store.servicenow.com/store/app/b9c2a33b47001f14fd025e45d36d43bb",
+      "status": "listed",
+      "features": [
+        {
+          "icon": "list",
+          "title": "One screen, every instance",
+          "text": "Register each instance once. Update Center scans them all and lists every available update with summary, release compatibility, dependencies, vendor and full version history."
+        },
+        {
+          "icon": "shield",
+          "title": "Production stays locked",
+          "text": "Production is locked until you enable it, and a version must be proven on a sub-production instance first. Blocked apps never slip into bulk updates."
+        },
+        {
+          "icon": "wave",
+          "title": "Guarded waves",
+          "text": "Upgrade one app, a selection, or everything. Large selections split into capped waves that submit themselves as each wave completes."
+        },
+        {
+          "icon": "refresh",
+          "title": "Self-healing",
+          "text": "A background engine tracks installs to completion, recovers stalled submissions, promotes queued waves and runs a daily scan."
+        },
+        {
+          "icon": "lock",
+          "title": "Enterprise credentials",
+          "text": "Remote instances authenticate with Connection & Credential aliases or OAuth 2.0 profiles. No passwords in application tables."
+        },
+        {
+          "icon": "record",
+          "title": "Rollback id on every batch",
+          "text": "Every batch records its rollback id, so you can see what changed, where and when, and back it out with proof."
+        }
+      ],
+      "sections": [
+        {
+          "kicker": "Fleet view",
+          "title": "See the whole estate at a glance.",
+          "text": "Per-instance progress bars show the fleet marching to 100%. Filter by instance, vendor or state, and open any app for its full history.",
+          "bullets": [
+            "Update inventory enriched from the app repository",
+            "Blocked updates shown with the vendor reason",
+            "Scheduled daily scans"
+          ],
+          "image": "instances",
+          "alt": "Managed instances view with per-instance progress bars"
+        },
+        {
+          "kicker": "Guardrails",
+          "title": "Safe by default, flexible when you need it.",
+          "text": "You decide how aggressive each environment can be. The defaults protect production.",
+          "bullets": [
+            "Production lock until explicitly enabled",
+            "Proven-on-sub-prod gate before production accepts a version",
+            "Capped wave size, automatic queue promotion"
+          ],
+          "image": "guardrails",
+          "alt": "Settings page with production lock, sub-production proof gate and wave size guardrails"
+        },
+        {
+          "kicker": "Audit trail",
+          "title": "Every update on the record.",
+          "text": "Each install is tracked to completion with its state, timing and rollback id, so change reviews have evidence instead of screenshots.",
+          "bullets": [
+            "Per-app update records: available, submitted, updated, failed",
+            "Automatic recovery of stalled submissions"
+          ],
+          "image": "records",
+          "alt": "Update records list showing the state of each application update"
+        }
+      ],
+      "steps": [
+        {
+          "title": "Install",
+          "text": "Get Update Center from the ServiceNow Store and install it on your hub instance."
+        },
+        {
+          "title": "Register instances",
+          "text": "Add each instance with a Connection & Credential alias or OAuth 2.0 profile."
+        },
+        {
+          "title": "Scan",
+          "text": "Run a scan, or wait for the daily one. Review every available update."
+        },
+        {
+          "title": "Update in waves",
+          "text": "Update one, some or all. Production stays locked until you say so."
+        }
+      ],
+      "hero_image": "dashboard",
+      "hero_alt": "Update Center dashboard listing every instance and the store application updates available on each",
+      "store": {
+        "live": true,
+        "certified": true,
+        "version": "1.0.4",
+        "certified_at": "2026-10-27",
+        "pricing": "Free",
+        "releases": [
+          "Australia"
+        ],
+        "checked_at": "2026-10-28"
+      }
+    },
+    {
+      "slug": "azure-inventory",
+      "order": 2,
+      "name": "Azure Inventory",
+      "scope": "x_omhu_azure",
+      "category": "Identity and credentials",
+      "tagline": "Know every Entra app registration before its secret expires.",
+      "summary": "Inventories Microsoft Entra ID (Azure AD) app registrations, their client secrets and certificates into ServiceNow, with expiry tracking, ownership and advance renewal tasks.",
+      "problem": "Teams find out an Entra client secret or certificate has expired only when an integration, SSO login or automation breaks. Discovery and certificate tools don't see app-registration credentials, so expiry dates live in spreadsheets and calendar reminders, and nobody knows who owns each app.",
+      "pricing": "Paid",
+      "store_url": null,
+      "status": "in_review",
+      "features": [
+        {
+          "icon": "list",
+          "title": "Full app-registration inventory",
+          "text": "Every Entra app registration, client secret and certificate pulled through Microsoft Graph into ServiceNow tables you can report on."
+        },
+        {
+          "icon": "clock",
+          "title": "Expiry you see coming",
+          "text": "Advance renewal tasks and dashboards for credentials expiring in 7, 30 and 90 days, before anything breaks."
+        },
+        {
+          "icon": "user",
+          "title": "Ownership that sticks",
+          "text": "Each registration is tied to an owner and a service, so renewals land on the right team."
+        },
+        {
+          "icon": "shield",
+          "title": "Read-only by design",
+          "text": "The integration reads from Graph and never writes back to Entra. Credentials use ServiceNow Connection & Credential aliases."
+        },
+        {
+          "icon": "record",
+          "title": "CMDB-aware",
+          "text": "App registrations become configuration items, so a credential outage maps to the services it affects."
+        },
+        {
+          "icon": "refresh",
+          "title": "Scheduled collection",
+          "text": "A scheduled job keeps the inventory current with a full audit trail of every run."
+        }
+      ],
+      "sections": [],
+      "steps": [
+        {
+          "title": "Install",
+          "text": "Install Azure Inventory from the ServiceNow Store."
+        },
+        {
+          "title": "Connect Graph",
+          "text": "Add a read-only Entra app registration through a Connection & Credential alias."
+        },
+        {
+          "title": "Collect",
+          "text": "Run the first collection, or wait for the scheduled one."
+        },
+        {
+          "title": "Act on expiry",
+          "text": "Work the renewal tasks from the dashboard before anything expires."
+        }
+      ],
+      "hero_image": null,
+      "hero_alt": "",
+      "store": {
+        "live": false,
+        "certified": false,
+        "version": "1.0.3",
+        "certified_at": null,
+        "pricing": "Paid",
+        "checked_at": "2026-10-28"
+      }
+    },
+    {
+      "slug": "domain-certificate-inventory",
+      "order": 3,
+      "name": "Domain & Certificate Inventory",
+      "scope": "x_omhu_dom",
+      "category": "Web assets",
+      "tagline": "Every domain and certificate you own, in your CMDB.",
+      "summary": "Pulls your registered domains, DNS and TLS certificates from your registrar into ServiceNow, with expiry tracking and renewal tasks.",
+      "problem": "Domains and certificates are bought by different people over years and tracked nowhere. The first sign of an expired one is a site that stops loading.",
+      "pricing": "Free",
+      "store_url": null,
+      "status": "coming_soon",
+      "features": [
+        {
+          "icon": "list",
+          "title": "Domain inventory",
+          "text": "Every registered domain with registrar, auto-renew flag, nameservers and expiry."
+        },
+        {
+          "icon": "lock",
+          "title": "Certificate inventory",
+          "text": "TLS certificates with issuer, subject names and expiry, mapped to the domains they protect."
+        },
+        {
+          "icon": "clock",
+          "title": "Renewal tasks",
+          "text": "Advance tasks for domains and certificates expiring soon."
+        }
+      ],
+      "sections": [],
+      "steps": [],
+      "hero_image": null,
+      "hero_alt": "",
+      "store": {
+        "live": false,
+        "certified": false,
+        "version": null,
+        "certified_at": null,
+        "pricing": "Free",
+        "checked_at": "2026-10-28"
+      }
+    },
+    {
+      "slug": "contracts-and-procurement",
+      "order": 4,
+      "name": "Contracts & Procurement",
+      "scope": "x_omhu_proc",
+      "category": "Source-to-pay",
+      "tagline": "Intake to purchase order, with a real approval chain.",
+      "summary": "A source-to-pay application for ServiceNow: procurement intake, budgets, contracts, approval rules, supplier channels and Amazon Business punchout.",
+      "problem": "Purchase requests arrive by email and chat, approvals happen in threads, and finance reconciles after the fact. Nobody can show who approved what, against which budget.",
+      "pricing": "Paid",
+      "store_url": null,
+      "status": "coming_soon",
+      "features": [
+        {
+          "icon": "list",
+          "title": "Guided intake",
+          "text": "A record producer that captures what is being bought, for whom, and from which budget."
+        },
+        {
+          "icon": "user",
+          "title": "Approval rules",
+          "text": "Decision tables route each request through the right approvers by amount, category and budget."
+        },
+        {
+          "icon": "record",
+          "title": "Contracts and budgets",
+          "text": "Contracts, budgets and suppliers as first-class records tied to every request."
+        },
+        {
+          "icon": "wave",
+          "title": "Supplier channels",
+          "text": "Amazon Business punchout and supplier channels so the order goes out the moment it is approved."
+        }
+      ],
+      "sections": [],
+      "steps": [],
+      "hero_image": null,
+      "hero_alt": "",
+      "store": {
+        "live": false,
+        "certified": false,
+        "version": null,
+        "certified_at": null,
+        "pricing": "Paid",
+        "checked_at": "2026-10-28"
+      }
+    }
+  ]
+}
