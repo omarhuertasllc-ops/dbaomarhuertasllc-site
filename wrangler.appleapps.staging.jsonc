@@ -1,0 +1,10 @@
+{
+  // Staging Worker for appleapps.dbaomarhuertasllc.com. Deployed by `npm run stage:appleapps`. (Separate from the main site.)
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "appleapps-site-staging",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "routes": [{"pattern":"appleapps-staging.dbaomarhuertasllc.com","custom_domain":true}],
+  "preview_urls": false,
+  "assets": { "directory": "./dist-appleapps", "html_handling": "auto-trailing-slash", "not_found_handling": "404-page" }
+}

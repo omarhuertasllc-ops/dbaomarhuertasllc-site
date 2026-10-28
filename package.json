@@ -8,6 +8,8 @@
     "check": "npm run build && npm test",
     "stage": "npm run check && wrangler deploy -c wrangler.staging.jsonc",
     "promote": "sh scripts/promote.sh",
+    "stage:appleapps": "npm run check && wrangler deploy -c wrangler.appleapps.staging.jsonc",
+    "deploy:appleapps": "npm run check && wrangler deploy -c wrangler.appleapps.jsonc",
     "store:sync": "node scripts/store-sync.mjs"
   },
   "engines": {

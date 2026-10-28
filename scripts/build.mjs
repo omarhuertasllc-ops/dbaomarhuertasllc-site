@@ -5,7 +5,7 @@
 // green accent and the calm facet light behind the home hero. Fonts: Geist + Geist Mono only. Styles: assets/site.css.
 // Content for the document pages (legal, privacy, terms, accessibility, lexicon) lives in src/content/*.json.
 // Every page works without JavaScript; JS adds the menu, the reveal, the facet light, the palette and the form sender.
-import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {readFile,writeFile,mkdir,cp,rm} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {dirname,join} from 'node:path';
 
@@ -15,6 +15,8 @@ const EMAIL='omar@dbaomarhuertasllc.com';
 const WEB3FORMS_KEY='6ea6366a-77ee-4e88-9767-deb9aabd4d29';
 const CITY='Greensboro, North Carolina';
 const STUDIO='https://webdesign.dbaomarhuertasllc.com/';
+const APPS_ORIGIN='https://appleapps.dbaomarhuertasllc.com';
+const APPS_URL=APPS_ORIGIN+'/'; // the App Store apps live on their own subdomain (dist-appleapps/)
 import {createHash} from 'node:crypto';
 const CSSV=createHash('sha1').update(await readFile(join(ROOT,'assets/site.css'))).update(await readFile(join(ROOT,'assets/snapps.css'))).digest('hex').slice(0,8); // cache-buster: _headers caches css for a month
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -24,9 +26,9 @@ export {spotlightApp};
 let SNAPPS=[]; // src/content/servicenow-apps.json, loaded before rendering
 const json=async n=>JSON.parse(await readFile(join(ROOT,'src/content',n+'.json'),'utf8'));
 
-const NAV=[['/services.html','ServiceNow'],['/servicenow-apps.html','Store apps'],[STUDIO,'Web Design'],['/apps.html','Apps'],['/about.html','About'],['/contact.html','Contact']];
+const NAV=[['/services.html','ServiceNow'],['/servicenow-apps.html','Store apps'],[STUDIO,'Web Design'],[APPS_URL,'Apps'],['/about.html','About'],['/contact.html','Contact']];
 const LAB=[['/operations-platform.html','Obvera','In development','IT operations with a change record behind every action.'],['/#albena','Albena','Coming soon','A private AI assistant for your own hardware.'],['/#agentgate','AgentGate','Research preview','Approval-bound AI agents, measured.']];
-const PAL=[['/services.html','ServiceNow services',''],['/apps.html','Apps, our App Store apps','iphone ipad mac ios'],['/industries.html','Industries',''],['/about.html','About, our story',''],['/servicenow-lexicon/','The ServiceNow Lexicon','96 chapters'],['/support.html','Support',''],['/contact.html','Contact',''],['/services.html#cmdb','CMDB and CSDM strategy','service'],['/services.html#itom','ITOM Discovery and Service Mapping','service'],['/services.html#integration','Integrations and Scripted REST APIs','service'],['/services.html#digital','Websites, apps and digital transformation','digital studio'],['/#story','Our story','home'],['/#tribute','Michael Lombardo tribute','home'],['/support.html#support-form','Open a support request','support'],['/security.html','Trust and security',''],['/privacy-policy.html','Privacy policy','legal'],['/terms.html','Terms and conditions','legal'],['/legal.html','Legal notices','legal'],['/accessibility.html','Accessibility statement',''],[STUDIO,'Web Design Studio','webdesign.dbaomarhuertasllc.com'],['/#albena','Albena, in development, coming soon','albena.ai'],['/operations-platform.html','Obvera, in development, coming soon','obvera platform'],['/#agentgate','AgentGate, research preview, coming soon','agentgate'],['https://albena.ai/waitlist','Join the Albena waitlist','albena.ai waitlist early access']];
+const PAL=[['/services.html','ServiceNow services',''],[APPS_URL,'Apps, our App Store apps','iphone ipad mac ios'],['/industries.html','Industries',''],['/about.html','About, our story',''],['/servicenow-lexicon/','The ServiceNow Lexicon','96 chapters'],['/support.html','Support',''],['/contact.html','Contact',''],['/services.html#cmdb','CMDB and CSDM strategy','service'],['/services.html#itom','ITOM Discovery and Service Mapping','service'],['/services.html#integration','Integrations and Scripted REST APIs','service'],['/services.html#digital','Websites, apps and digital transformation','digital studio'],['/#story','Our story','home'],['/#tribute','Michael Lombardo tribute','home'],['/support.html#support-form','Open a support request','support'],['/security.html','Trust and security',''],['/privacy-policy.html','Privacy policy','legal'],['/terms.html','Terms and conditions','legal'],['/legal.html','Legal notices','legal'],['/accessibility.html','Accessibility statement',''],[STUDIO,'Web Design Studio','webdesign.dbaomarhuertasllc.com'],['/#albena','Albena, in development, coming soon','albena.ai'],['/operations-platform.html','Obvera, in development, coming soon','obvera platform'],['/#agentgate','AgentGate, research preview, coming soon','agentgate'],['https://albena.ai/waitlist','Join the Albena waitlist','albena.ai waitlist early access']];
 const MARK=(id,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="mk-${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8be878"/><stop offset="1" stop-color="#2e9e1f"/></linearGradient><mask id="mkm-${id}"><rect width="32" height="32" fill="#fff"/><g stroke="#000" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M10 21.5 16 9l6 12.5"/><path d="M12.6 16.5h6.8"/></g></mask></defs><circle cx="16" cy="16" r="14" fill="url(#mk-${id})" mask="url(#mkm-${id})"/></svg>`;
 const stamp=(t='In development',cls='amber')=>`<span class="chip ${cls}">${t}</span>`;
 const stampFor=s=>s==='Research preview'?stamp(s,'acc'):stamp(s,'amber');
@@ -37,10 +39,11 @@ const sec=(id,inner,opts={})=>`<section${id?` id="${id}"`:''} class="sec${opts.c
 const closing=(h2,p,label='Start a conversation',href='/contact.html')=>`<section class="sec cta-sec" aria-labelledby="cl-h"><div class="cta-glow" aria-hidden="true"></div><div class="wrap center"><h2 id="cl-h" class="h-section reveal">${h2}</h2><p class="sub reveal">${p}</p><div class="cta reveal">${btn(href,label,'btn btn-primary')}${btn('/services.html','See what we build','btn btn-ghost')}</div><a class="mail" href="mailto:${EMAIL}">${EMAIL}</a></div></section>`;
 
 // ----- the shell -----
-function page({path,title,description,body,script,css,bodyClass='',ogImage=`${ORIGIN}/assets/knowledge/k_2026_a.jpg`}){
- const url=ORIGIN+path.replace(/index\.html$/,'');
+// `site` is set only for the Apple apps build: its canonical origin, and every main-site link becomes absolute to ORIGIN.
+function page({path,title,description,body,script,css,bodyClass='',ogImage=`${ORIGIN}/assets/knowledge/k_2026_a.jpg`,site=''}){
+ const url=(site||ORIGIN)+path.replace(/index\.html$/,'');
  const schema={"@context":"https://schema.org","@type":"ProfessionalService","name":"Omar Huertas LLC","url":ORIGIN,"email":EMAIL,"description":"Registered ServiceNow Build, Consulting & Implementation Partner: CMDB, ITAM, ITSM, ITOM, integrations, AI and automation, plus websites and custom applications.","founder":{"@type":"Person","name":"Omar Huertas"},"address":{"@type":"PostalAddress","addressLocality":"Greensboro","addressRegion":"NC","addressCountry":"US"},"sameAs":["https://www.linkedin.com/company/omar-huertas-llc","https://www.linkedin.com/in/omarhuertas"]};
- return `<!doctype html>
+ const html=`<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -68,26 +71,29 @@ function page({path,title,description,body,script,css,bodyClass='',ogImage=`${OR
 </head>
 <body${bodyClass?` class="${bodyClass}"`:''}>
 <a class="skip" href="#main">Skip to content</a>
-${header(path)}
+${header(path,site)}
 <main id="main" tabindex="-1">
 ${body}
 </main>
-${footer(path)}
+${footer(path,site)}
 ${cmd()}
 </body>
 </html>
 `;
+ return site?absolutize(html):html;
 }
+const absolutize=h=>h.replace(/(href|action)="\/(?!\/|assets\/)/g,(m,a)=>`${a}="${ORIGIN}/`);
 
 // ----- nav: brand, four links, the "In development" menu, Cmd-K and the call -----
-function header(path){
- const cur=h=>path===h?' aria-current="page"':'';
+function header(path,site=''){
+ const cur=h=>(path===h||(site&&h===APPS_URL))?' aria-current="page"':'';
+ const nav=site?[['/','&larr; Omar Huertas LLC'],...NAV]:NAV;
  return `<header class="nav" data-nav>
 <div class="nav-in">
 <a class="brand" href="/" aria-label="Omar Huertas LLC home">${MARK('nav')}<span>Omar Huertas LLC</span></a>
 <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Menu" data-nav-toggle><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg></button>
 <div class="nav-panel" id="nav-panel">
-<nav aria-label="Primary"><ul class="links">${NAV.map(([h,t])=>`<li><a href="${h}"${cur(h)}>${t}</a></li>`).join('')}<li class="lab"><details data-lab><summary>In development</summary><div class="lab-menu">${LAB.map(([h,t,s,d])=>`<a href="${h}"><b>${t}</b>${stampFor(s)}<span>${d}</span></a>`).join('')}</div></details></li></ul></nav>
+<nav aria-label="Primary"><ul class="links">${nav.map(([h,t])=>`<li><a href="${h}"${cur(h)}>${t}</a></li>`).join('')}<li class="lab"><details data-lab><summary>In development</summary><div class="lab-menu">${LAB.map(([h,t,s,d])=>`<a href="${h}"><b>${t}</b>${stampFor(s)}<span>${d}</span></a>`).join('')}</div></details></li></ul></nav>
 <div class="nav-cta"><button type="button" class="btn btn-sm btn-ghost cmdk" data-open-island="cmd" aria-label="Search the site, Command K"><span class="kbd">&#8984;K</span></button>${btn('/contact.html','Talk to us','btn btn-sm btn-primary')}</div>
 </div>
 </div>
@@ -95,14 +101,14 @@ function header(path){
 }
 
 // ----- family bar, then the four-column footer -----
-function footer(path){
- return `<nav class="family" aria-label="Omar Huertas LLC sites"><div class="family-in"><span>A company of Omar Huertas LLC</span><a href="/"${path==='/index.html'?' aria-current="page"':''}><i class="llc"></i>dbaomarhuertasllc.com</a><a href="https://albena.ai/" rel="noopener"><i class="alb"></i>albena.ai</a><a href="${STUDIO}" rel="noopener"><i class="stu"></i>Web Design Studio</a></div></nav>
+function footer(path,site=''){
+ return `<nav class="family" aria-label="Omar Huertas LLC sites"><div class="family-in"><span>A company of Omar Huertas LLC</span><a href="/"${path==='/index.html'&&!site?' aria-current="page"':''}><i class="llc"></i>dbaomarhuertasllc.com</a><a href="https://albena.ai/" rel="noopener"><i class="alb"></i>albena.ai</a><a href="${STUDIO}" rel="noopener"><i class="stu"></i>Web Design Studio</a></div></nav>
 <footer class="foot"><div class="foot-in">
 <div class="foot-brand"><a class="brand" href="/" aria-label="Omar Huertas LLC home">${MARK('foot',20)}<span>Omar Huertas LLC</span></a><p>Registered ServiceNow Build &amp; Consulting Partner. A web design studio. Makers of Obvera, Albena and AgentGate, all in development.</p><p class="fine">${CITY}. <a href="mailto:${EMAIL}">${EMAIL}</a></p></div>
 <nav class="fcols" aria-label="Footer">
 <div><h2>ServiceNow</h2><a href="/services.html">Services</a><a href="/servicenow-apps.html">Store apps</a>${listedApps(SNAPPS).map(a=>`<a href="${appUrl(a)}">${esc(a.name)}</a>`).join('')}<a href="/services.html#cmdb">CMDB and CSDM</a><a href="/services.html#itom">ITOM and discovery</a><a href="/services.html#integration">Integrations</a><a href="/industries.html">Industries</a><a href="/servicenow-lexicon/">The ServiceNow Lexicon</a></div>
 <div><h2>In development</h2><a href="/operations-platform.html">Obvera ${stamp('In development')}</a><a href="/#albena">Albena ${stamp('Coming soon')}</a><a href="/#agentgate">AgentGate ${stamp('Research preview','acc')}</a><a href="https://albena.ai/waitlist" rel="noopener">Join the Albena waitlist</a></div>
-<div><h2>Company</h2><a href="/apps.html">Apps</a><a href="/about.html">About, our story</a><a href="${STUDIO}" rel="noopener">Web Design Studio</a><a href="/support.html">Support</a><a href="/contact.html">Contact</a><a href="https://www.linkedin.com/company/omar-huertas-llc" rel="noopener">LinkedIn</a></div>
+<div><h2>Company</h2><a href="${APPS_URL}">Apps</a><a href="/about.html">About, our story</a><a href="${STUDIO}" rel="noopener">Web Design Studio</a><a href="/support.html">Support</a><a href="/contact.html">Contact</a><a href="https://www.linkedin.com/company/omar-huertas-llc" rel="noopener">LinkedIn</a></div>
 <div><h2>Trust and legal</h2><a href="/security.html">Trust and security</a><a href="/privacy-policy.html">Privacy policy</a><a href="/terms.html">Terms and conditions</a><a href="/legal.html">Legal notices</a><a href="/accessibility.html">Accessibility</a><a href="/sitemap.xml">Sitemap</a></div>
 </nav></div>
 <div class="foot-bot"><p>&copy; <span data-year>${new Date().getFullYear()}</span> Omar Huertas LLC. All rights reserved.</p><p>In honor of <a href="/#tribute">Michael Lombardo</a>, the Mayor of ServiceNow (1987&ndash;2024). <a href="https://www.joeandruzzifoundation.org" rel="noopener">#LombardoLegacy</a></p><p>No trackers. Set in Geist.</p></div>
@@ -139,7 +145,7 @@ const TRIBUTE=()=>sec('tribute',`<div class="tribute"><figure class="shot reveal
 
 // ----- the ServiceNow bento (home and services share it) -----
 const BENTO=(links=true)=>{const L=(id,t)=>links?`<a class="stretch" href="/services.html#${id}">${t}</a>`:t;return `<div class="bento">
-<article class="bcard span7 b-scoped reveal"><div class="ill ill-pipe" aria-hidden="true"><div class="pipe"><span>Scope</span><i></i><span>Build</span><i></i><span class="on">ATF tests</span><i></i><span>Publish</span></div><div class="pipe-files"><div><b>Tables and ACLs</b><em>in scope</em></div><div><b>Flow Designer</b><em>reviewed</em></div><div><b>Store validation</b><em>ready</em></div><div><b>Update set</b><em>captured</em></div><div><b>ATF suite</b><em>passing</em></div><div><b>Docs and handover</b><em>written</em></div></div></div><div class="txt"><h3>${L('development','Scoped applications')}</h3><p>Custom apps on the Now Platform, built in their own scope with proper tables, roles, ACLs and flows, covered by ATF suites and ready for Store or internal release.</p></div></article>
+<article class="bcard span7 b-scoped reveal"><div class="ill ill-incl" aria-hidden="true"><ul class="incl"><li>Tables and ACLs</li><li>Flows and Flow Designer</li><li>ATF test suite</li><li>Update set</li><li>Docs and handover</li></ul></div><div class="txt"><h3>${L('development','Scoped applications')}</h3><p>Custom apps on the Now Platform, built in their own scope with proper tables, roles, ACLs and flows, covered by ATF suites and ready for Store or internal release.</p></div></article>
 <article class="bcard span5 reveal"><div class="ill ill-mem" aria-hidden="true"><svg viewBox="0 0 220 150"><path d="M110 26 60 70M110 26 110 70M110 26 160 70M60 70 36 118M60 70 84 118M110 70 110 118M160 70 136 118M160 70 184 118M60 70 110 70M110 70 160 70"/><circle class="c" cx="110" cy="26" r="7"/><circle cx="60" cy="70" r="5"/><circle cx="110" cy="70" r="5"/><circle cx="160" cy="70" r="5"/><circle cx="36" cy="118" r="4"/><circle cx="84" cy="118" r="4"/><circle cx="110" cy="118" r="4"/><circle cx="136" cy="118" r="4"/><circle cx="184" cy="118" r="4"/><text class="lbl" x="122" y="30">Business service</text><text x="14" y="142">Servers</text><text x="100" y="142">Databases</text><text x="172" y="142">Network</text></svg></div><div class="txt"><h3>${L('cmdb','CMDB and discovery')}</h3><p>CSDM-aligned classes, identification and reconciliation rules, and service maps that show what depends on what.</p></div></article>
 <article class="bcard span6 reveal"><div class="txt"><h3>${L('itom','ITSM and ITOM')}</h3><p>Incident, problem, change and event management shaped around your real process, and discovery that keeps the picture current.</p><ul class="pts"><li>Incident and problem</li><li>Change and release</li><li>Event management</li><li>Discovery and service mapping</li></ul></div></article>
 <article class="bcard span6 reveal"><div class="ill ill-conn" aria-hidden="true"><span class="ring"></span><span class="ring r2"></span><span class="hub">ServiceNow</span><span class="n n1">REST</span><span class="n n2">MID server</span><span class="n n3">IntegrationHub</span><span class="n n4">Identity</span><span class="n n5">Cloud</span></div><div class="txt"><h3>${L('integration','Integrations')}</h3><p>REST and IntegrationHub spokes, MID servers and data pipelines, monitored, logged and documented.</p></div></article>
@@ -271,7 +277,7 @@ ${closing('Need a ServiceNow partner for a specialized environment?','Engagement
 }
 
 // ----- APPS: the App Store showcase (data: src/content/apps.json; icons and previews are self-hosted in assets/apps) -----
-async function apps(){
+async function apps(site=''){
  const list=await json('apps');
  const genres=[...new Set(list.map(a=>a.genre))];
  const gid=g=>'g-'+g.toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -282,7 +288,7 @@ async function apps(){
  const body=`${phero({eyebrow:'Apps',h1:'Apps we have shipped to the App Store.',lead:`${list.length} apps for iPhone, iPad and Mac, built and published by Omar Huertas LLC. No trackers on this page; every icon and preview is hosted here.`})}
 ${sec('apps',`${chips}${jumpNav}<p class="app-count" role="status" aria-live="polite" data-count hidden></p>${groups}<p class="note">App Store and the Apple logo are trademarks of Apple Inc. Apps listed are live on the App Store at the time of publishing. Availability varies by country.</p>`,{aria:'App catalog',cls:'first'})}
 ${closing('Need an app built, or a platform behind it?','We design, build and publish apps, and connect them to the systems your business already runs on.','Start a conversation')}`;
- return page({path:'/apps.html',bodyClass:'p-apps',script:'apps',title:'Apps | Omar Huertas LLC',description:`${list.length} apps from Omar Huertas LLC on the App Store: utilities, developer tools, education, health and more, for iPhone, iPad and Mac.`,body});
+ return page({path:site?'/index.html':'/apps.html',bodyClass:'p-apps',script:'apps',title:site?'Apple apps | Omar Huertas LLC':'Apps | Omar Huertas LLC',description:`${list.length} apps from Omar Huertas LLC on the App Store: utilities, developer tools, education, health and more, for iPhone, iPad and Mac.`,body,site});
 }
 
 // ----- SUPPORT -----
@@ -329,11 +335,33 @@ ${sec('disclosure',`<div class="split"><div class="head reveal"><p class="eyebro
  return page({path:'/security.html',bodyClass:'p-security',title:'Trust & Security | Omar Huertas LLC',description:'How Omar Huertas LLC protects data: security controls, privacy, and compliance posture for clients and partners.',body});
 }
 
+// ----- the old /apps.html: the catalog moved to appleapps.dbaomarhuertasllc.com (_redirects 301s it; this stub is the fallback) -----
+const appsMoved=()=>`<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#02202f">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="refresh" content="0; url=${APPS_URL}">
+<title>Apps have moved | Omar Huertas LLC</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="${APPS_URL}">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/assets/site.css?v=${CSSV}">
+</head>
+<body class="p-err">
+<main id="main" tabindex="-1">${sec('',`<div class="center"><h1 class="h-display">Our Apple apps have moved.</h1><p class="lead">The App Store catalog now lives at <a href="${APPS_URL}">appleapps.dbaomarhuertasllc.com</a>.</p><div class="act">${btn(APPS_URL,'Open the Apple apps','btn btn-primary')}${btn('/','Back to Omar Huertas LLC','btn btn-ghost')}</div></div>`,{cls:'first'})}</main>
+</body>
+</html>
+`;
+
 // ----- 404 -----
-function notFound(){
+function notFound(site=''){
  const body=`${phero({eyebrow:'404',h1:'That page could not be found.',lead:'The page may have moved or the address may be incorrect. Try the menu, press <kbd>&#8984;</kbd><kbd>K</kbd> to jump anywhere, or start over at home.',act:btn('/','Return home','btn btn-primary')+`<a class="more" href="/servicenow-lexicon/">Open the ServiceNow Lexicon</a>`,center:true})}
 ${sec('',`<ul class="ways"><li><a href="/services.html"><strong>ServiceNow services</strong><span>Scoped apps, CMDB, ITSM and ITOM, integrations.</span></a></li><li><a href="/about.html"><strong>About</strong><span>The story behind the standard.</span></a></li><li><a href="/contact.html"><strong>Contact</strong><span>Start a conversation. Replies within a business day.</span></a></li></ul>`,{aria:'Where to go next',cls:'first'})}`;
- return page({path:'/404.html',bodyClass:'p-err',title:'Page Not Found | Omar Huertas LLC',description:'Page not found.',body});
+ return page({path:'/404.html',bodyClass:'p-err',title:'Page Not Found | Omar Huertas LLC',description:'Page not found.',body,site});
 }
 
 // ----- DOCUMENT PAGES (legal, privacy, terms, accessibility): a contents rail and the text -----
@@ -389,7 +417,7 @@ await mkdir(join(ROOT,'servicenow'),{recursive:true});
 
 // ----- write everything -----
 const LEX=await lexicon();
-const out=[['index.html',home],['about.html',about],['services.html',services],['industries.html',industries],['apps.html',apps],['support.html',support],['contact.html',contact],['operations-platform.html',obvera],['security.html',security],['404.html',notFound],
+const out=[['index.html',home],['about.html',about],['services.html',services],['industries.html',industries],['apps.html',appsMoved],['support.html',support],['contact.html',contact],['operations-platform.html',obvera],['security.html',security],['404.html',notFound],
  ['legal.html',docPage({path:'/legal.html',file:'legal',kind:'Legal notices',title:'Legal Notices & Disclaimers | Omar Huertas LLC',description:'Trademarks, affiliations, disclaimers, intellectual property, and liability terms for Omar Huertas LLC and the Services we provide.'})],
  ['privacy-policy.html',docPage({path:'/privacy-policy.html',file:'privacy-policy',kind:'Privacy policy',title:'Privacy Policy | Omar Huertas LLC',description:'How Omar Huertas LLC collects, uses, shares, and protects information across our website, our consulting and implementation services, and the applications we develop and publish.'})],
  ['terms.html',docPage({path:'/terms.html',file:'terms',kind:'Terms &amp; conditions',title:'Terms & Conditions | Omar Huertas LLC',description:'The terms that govern your use of the Omar Huertas LLC website, our consulting and implementation services, and our applications.'})],
@@ -398,3 +426,19 @@ const out=[['index.html',home],['about.html',about],['services.html',services],[
  ['servicenow-apps.html',snHub],...SNAPPS.map(a=>[`servicenow/${a.slug}.html`,snApp(a)])];
 await mkdir(join(ROOT,'servicenow-lexicon'),{recursive:true});
 for(const [f,fn] of out){const html=await fn();if(/\bElite\b/.test(html))throw new Error(f+': "Elite" must not appear');if(/ style="/.test(html))throw new Error(f+': inline style');if(/Fraunces|serif/i.test(html.replace(/sans-serif/g,'')))throw new Error(f+': a serif face is named');await writeFile(join(ROOT,f),html);console.log('wrote',f,(html.length/1024).toFixed(0)+'KB')}
+
+// ----- dist-appleapps/: the Apple apps site (appleapps.dbaomarhuertasllc.com), its own Worker. Same shell; main-site links are absolute. -----
+const AA=join(ROOT,'dist-appleapps');
+await rm(AA,{recursive:true,force:true});
+await mkdir(join(AA,'assets'),{recursive:true});
+for(const f of ['site.css','snapps.css','app.js','rt.js','apps.js','favicon.svg','fonts','islands','apps'])await cp(join(ROOT,'assets',f),join(AA,'assets',f),{recursive:true});
+{
+ const idx=await apps(APPS_ORIGIN),nf=notFound(APPS_ORIGIN);
+ for(const [f,html] of [['index.html',idx],['404.html',nf]]){if(/\bElite\b/.test(html)||/ style="/.test(html))throw new Error('appleapps '+f+': Elite or inline style');await writeFile(join(AA,f),html)}
+ await writeFile(join(AA,'robots.txt'),`User-agent: *\nAllow: /\n\nSitemap: ${APPS_URL}sitemap.xml\n`);
+ await writeFile(join(AA,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>${APPS_URL}</loc><lastmod>${new Date().toISOString().slice(0,10)}</lastmod><priority>1.0</priority></url>\n</urlset>\n`);
+ let hd=await readFile(join(ROOT,'_headers'),'utf8');
+ hd=hd.split('\n# gated areas')[0].trimEnd()+'\n';
+ await writeFile(join(AA,'_headers'),hd);
+ console.log('wrote dist-appleapps/ (index.html, 404.html, assets, _headers, robots.txt, sitemap.xml)');
+}

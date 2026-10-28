@@ -19,3 +19,4 @@ _site/
 dist/
 .wrangler/
 .cloudflare/
+dist-appleapps/
