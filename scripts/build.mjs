@@ -2,7 +2,7 @@
 // Renders every public page of dbaomarhuertasllc.com into the repo root (the deployable sources).
 // Concept D "Albena family" (2026-10-11): the design system shared with albena.ai (tokens, 56px blur nav, pill buttons,
 // gradient display type, tilted product stage, 16px bento cards, statement, four-column footer, family bar), with the LLC's
-// emerald accent and the calm facet light behind the home hero. Fonts: Geist + Geist Mono only. Styles: assets/site.css.
+// green accent and the calm facet light behind the home hero. Fonts: Geist + Geist Mono only. Styles: assets/site.css.
 // Content for the document pages (legal, privacy, terms, accessibility, lexicon) lives in src/content/*.json.
 // Every page works without JavaScript; JS adds the menu, the reveal, the facet light, the palette and the form sender.
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
@@ -15,6 +15,8 @@ const EMAIL='omar@dbaomarhuertasllc.com';
 const WEB3FORMS_KEY='6ea6366a-77ee-4e88-9767-deb9aabd4d29';
 const CITY='Greensboro, North Carolina';
 const STUDIO='https://webdesign.dbaomarhuertasllc.com/';
+import {createHash} from 'node:crypto';
+const CSSV=createHash('sha1').update(await readFile(join(ROOT,'assets/site.css'))).update(await readFile(join(ROOT,'assets/snapps.css'))).digest('hex').slice(0,8); // cache-buster: _headers caches css for a month
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 import {DEMO,CAPS,PROOF} from './home-proof.mjs';
 import {loadApps,spotlightApp,snAppBody,snAppMeta,hubBody,homeStrip,homeAnnounce,listedApps,appUrl} from './snapps.mjs';
@@ -25,7 +27,7 @@ const json=async n=>JSON.parse(await readFile(join(ROOT,'src/content',n+'.json')
 const NAV=[['/services.html','ServiceNow'],['/servicenow-apps.html','Store apps'],[STUDIO,'Web Design'],['/apps.html','Apps'],['/about.html','About'],['/contact.html','Contact']];
 const LAB=[['/operations-platform.html','Obvera','In development','IT operations with a change record behind every action.'],['/#albena','Albena','Coming soon','A private AI assistant for your own hardware.'],['/#agentgate','AgentGate','Research preview','Approval-bound AI agents, measured.']];
 const PAL=[['/services.html','ServiceNow services',''],['/apps.html','Apps, our App Store apps','iphone ipad mac ios'],['/industries.html','Industries',''],['/about.html','About, our story',''],['/servicenow-lexicon/','The ServiceNow Lexicon','96 chapters'],['/support.html','Support',''],['/contact.html','Contact',''],['/services.html#cmdb','CMDB and CSDM strategy','service'],['/services.html#itom','ITOM Discovery and Service Mapping','service'],['/services.html#integration','Integrations and Scripted REST APIs','service'],['/services.html#digital','Websites, apps and digital transformation','digital studio'],['/#story','Our story','home'],['/#tribute','Michael Lombardo tribute','home'],['/support.html#support-form','Open a support request','support'],['/security.html','Trust and security',''],['/privacy-policy.html','Privacy policy','legal'],['/terms.html','Terms and conditions','legal'],['/legal.html','Legal notices','legal'],['/accessibility.html','Accessibility statement',''],[STUDIO,'Web Design Studio','webdesign.dbaomarhuertasllc.com'],['/#albena','Albena, in development, coming soon','albena.ai'],['/operations-platform.html','Obvera, in development, coming soon','obvera platform'],['/#agentgate','AgentGate, research preview, coming soon','agentgate'],['https://albena.ai/waitlist','Join the Albena waitlist','albena.ai waitlist early access']];
-const MARK=(id,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="mk-${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6ee7b7"/><stop offset="1" stop-color="#059669"/></linearGradient><mask id="mkm-${id}"><rect width="32" height="32" fill="#fff"/><g stroke="#000" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M10 21.5 16 9l6 12.5"/><path d="M12.6 16.5h6.8"/></g></mask></defs><circle cx="16" cy="16" r="14" fill="url(#mk-${id})" mask="url(#mkm-${id})"/></svg>`;
+const MARK=(id,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="mk-${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8be878"/><stop offset="1" stop-color="#2e9e1f"/></linearGradient><mask id="mkm-${id}"><rect width="32" height="32" fill="#fff"/><g stroke="#000" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M10 21.5 16 9l6 12.5"/><path d="M12.6 16.5h6.8"/></g></mask></defs><circle cx="16" cy="16" r="14" fill="url(#mk-${id})" mask="url(#mkm-${id})"/></svg>`;
 const stamp=(t='In development',cls='amber')=>`<span class="chip ${cls}">${t}</span>`;
 const stampFor=s=>s==='Research preview'?stamp(s,'acc'):stamp(s,'amber');
 const btn=(h,t,cls='btn')=>`<a class="${cls}" href="${h}">${t}</a>`;
@@ -43,7 +45,7 @@ function page({path,title,description,body,script,css,bodyClass='',ogImage=`${OR
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#08090a">
+<meta name="theme-color" content="#02202f">
 <meta name="color-scheme" content="dark">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
@@ -58,7 +60,7 @@ function page({path,title,description,body,script,css,bodyClass='',ogImage=`${OR
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/Geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
-<link rel="stylesheet" href="/assets/site.css">${css?`\n<link rel="stylesheet" href="/assets/${css}.css">`:''}
+<link rel="stylesheet" href="/assets/site.css?v=${CSSV}">${css?`\n<link rel="stylesheet" href="/assets/${css}.css?v=${CSSV}">`:''}
 <script type="application/ld+json">${JSON.stringify(schema).replace(/</g,'\\u003c')}</script>
 <script>document.documentElement.classList.add('js')</script>
 <script type="module" src="/assets/rt.js"></script>

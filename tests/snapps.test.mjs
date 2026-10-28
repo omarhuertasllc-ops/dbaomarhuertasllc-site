@@ -18,17 +18,20 @@ test('an in-review app never says Certified and has no Store button',()=>{
  assert.match(h,/uc-stage/);
  const f=read('servicenow/azure-inventory.html');assert.doesNotMatch(f,/store\.servicenow\.com/);assert.doesNotMatch(f,/ServiceNow Certified/);
 });
-test('coming-soon apps use the notify button and skip empty sections and steps',()=>{
- for(const s of ['domain-certificate-inventory','contracts-and-procurement']){const h=snAppBody(by(s));assert.match(h,/Coming soon/);assert.match(h,/Get notified/);assert.doesNotMatch(h,/certified|store\.servicenow\.com|uc-split|uc-steps/i)}
+test('coming-soon apps are in the data but never rendered',()=>{
+ const all=JSON.parse(read('src/content/servicenow-apps.json')).apps;
+ const soon=all.filter(a=>a.status==='coming_soon').map(a=>a.slug);assert.ok(soon.length>0);
+ for(const s of soon){assert.equal(by(s),undefined,s);assert.ok(!existsSync(R+`servicenow/${s}.html`),s);assert.ok(!read('sitemap.xml').includes(s),s);for(const f of ['index.html','servicenow-apps.html'])assert.ok(!read(f).includes(s),f+' '+s)}
+ assert.ok(apps.every(a=>a.status==='listed'||a.status==='in_review'));
 });
 test('the listed app shows the Store button, version and certification from the data',()=>{
  const h=snAppBody(by('update-center'));assert.match(h,/Now on the ServiceNow Store/);assert.match(h,/href="https:\/\/store\.servicenow\.com\/store\/app\/b9c2a33b47001f14fd025e45d36d43bb"/);assert.match(h,/Version <b>1\.0\.4/);assert.match(h,/ServiceNow Certified<\/b> October 2026/);assert.match(h,/\/assets\/snapps\/update-center\/dashboard\.webp/);
  const un=structuredClone(by('update-center'));un.store.certified=false;assert.doesNotMatch(snAppBody(un),/certified/i);
  for(const n of ['dashboard','guardrails','instances','records'])assert.ok(existsSync(R+`assets/snapps/update-center/${n}.webp`),n);
 });
-test('hub lists all four apps with honest counts and the spotlight',()=>{
+test('hub lists every rendered app with honest counts and the spotlight',()=>{
  const h=hubBody(apps);for(const a of apps)assert.ok(h.includes(`href="/servicenow/${a.slug}.html"`),a.slug);
- assert.equal(counts(apps),'1 on the Store, 1 in review, 2 coming soon');assert.match(h,/1 on the Store, 1 in review, 2 coming soon/);
+ assert.equal(counts(apps),'1 on the Store, 1 in review');assert.match(h,/1 on the Store, 1 in review/);
  assert.match(h,/Latest on the Store/);assert.match(h,/October 2026/);assert.match(h,/On the Store/);assert.match(h,/In review/);
  assert.equal((h.match(/store\.servicenow\.com/g)||[]).length,1);
  const page=read('servicenow-apps.html');assert.match(page,/Apps we build for/);assert.match(page,/snapps\.css/);

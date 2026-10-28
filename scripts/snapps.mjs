@@ -20,6 +20,8 @@ const ICONS={
  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/>'
 };
+// Only these statuses render anywhere on the site. Other entries (coming_soon) stay in the json as the source of truth.
+export const RENDERED=new Set(['listed','in_review']);
 const WORDS=['zero','one','two','three','four','five','six','seven','eight','nine'];
 const monthYear=d=>new Date(d+'T00:00:00Z').toLocaleString('en-US',{month:'long',year:'numeric',timeZone:'UTC'});
 
@@ -56,7 +58,7 @@ export async function loadApps(root){
    try{a._dims[n]=webpSize(await readFile(join(root,'assets/snapps',a.slug,n+'.webp')))}catch{}
   }
  }
- return data.apps;
+ return data.apps.filter(a=>RENDERED.has(a.status));
 }
 function webpSize(b){
  if(b.toString('ascii',0,4)!=='RIFF'||b.toString('ascii',8,12)!=='WEBP')throw new Error('not webp');

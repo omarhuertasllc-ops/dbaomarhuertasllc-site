@@ -1,4 +1,4 @@
-// Facet: the signature emerald light field. WebGPU first, WebGL2 second, otherwise the CSS gradient stays.
+// Facet: the signature green-on-navy light field. WebGPU first, WebGL2 second, otherwise the CSS gradient stays.
 // Reacts to the cursor (light direction) and scroll (field drift). Paused when off-screen or hidden.
 const WGSL=`struct U{res:vec2f,mouse:vec2f,time:f32,scroll:f32,fade:f32,_p:f32};@group(0)@binding(0)var<uniform>u:U;
 struct O{@builtin(position)p:vec4f,@location(0)uv:vec2f};
@@ -12,7 +12,7 @@ let edge=1.-smoothstep(0.,.016,sqrt(d2)-sqrt(d1));
 let nrm=normalize(vec2f(hs(id)-.5,hs(id+3.1)-.5)+1e-3);
 let m=vec2f(u.mouse.x*asp,1.-u.mouse.y);let dir=normalize(m-vec2f(i.uv.x*asp,1.-i.uv.y));
 let lit=clamp(dot(nrm,dir)*.5+.5,0.,1.);let ds=exp(-length(m-vec2f(i.uv.x*asp,1.-i.uv.y))*1.6);
-let deep=vec3f(.012,.19,.13);let em=vec3f(.063,.725,.506);let ice=vec3f(.75,.93,.88);let champ=vec3f(.9,.835,.66);
+let deep=vec3f(.012,.19,.28);let em=vec3f(.384,.847,.306);let ice=vec3f(.76,.92,.96);let champ=vec3f(.72,.93,.62);
 var c=mix(deep,em,pow(lit,2.2)*(.55+.45*hs(id+9.)));c=mix(c,ice,pow(lit,9.)*.5*ds+.08*ds);c=mix(c,champ,edge*(.35+.45*ds));
 var a=.1+.3*pow(lit,2.4)+edge*(.12+.55*ds)+ds*.2;
 let y=i.uv.y;a*=smoothstep(.05,.55,y)*(.3+.7*smoothstep(0.,.75,i.uv.x))*u.fade;
@@ -27,7 +27,7 @@ for(int j=-1;j<=1;j++)for(int k=-1;k<=1;k++){vec2 g=vec2(k,j);vec2 o=h2(n+g);vec
 float edge=1.-smoothstep(0.,.016,sqrt(d2)-sqrt(d1));vec2 nrm=normalize(vec2(hs(id)-.5,hs(id+3.1)-.5)+1e-3);
 vec2 m=vec2(mouse.x*asp,1.-mouse.y),q=vec2(uv.x*asp,1.-uv.y);vec2 dir=normalize(m-q);
 float lit=clamp(dot(nrm,dir)*.5+.5,0.,1.),ds=exp(-length(m-q)*1.6);
-vec3 deep=vec3(.012,.19,.13),em=vec3(.063,.725,.506),ice=vec3(.75,.93,.88),champ=vec3(.9,.835,.66);
+vec3 deep=vec3(.012,.19,.28),em=vec3(.384,.847,.306),ice=vec3(.76,.92,.96),champ=vec3(.72,.93,.62);
 vec3 c=mix(deep,em,pow(lit,2.2)*(.55+.45*hs(id+9.)));c=mix(c,ice,pow(lit,9.)*.5*ds+.08*ds);c=mix(c,champ,edge*(.35+.45*ds));
 float a=.1+.3*pow(lit,2.4)+edge*(.12+.55*ds)+ds*.2;float y=uv.y;a*=smoothstep(.05,.55,y)*(.3+.7*smoothstep(0.,.75,uv.x))*fade;
 a+=(hs(gl_FragCoord.x+gl_FragCoord.y*917.+time)-.5)*.02;a=clamp(a,0.,1.);O=vec4(c*a,a);}`;
