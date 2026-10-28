@@ -93,9 +93,8 @@ export function snAppBody(a){
  const st=STATUS[a.status]||STATUS.coming_soon,listed=isListed(a),cert=isCertified(a);
  const sents=a.tagline.split(/(?<=\.)\s+/);
  const h1=sents.length>1?`${esc(sents[0])} <em>${esc(sents.slice(1).join(' '))}</em>`:esc(a.tagline);
- const price=listed?(a.store.pricing||a.pricing):a.pricing;
  const meta=[
-  listed?`<span><b>${esc(price)}</b> on the Store</span>`:`<span>Pricing <b>${esc(price)}</b></span>`,
+  
   listed&&a.store.version?`<span>Version <b>${esc(a.store.version)}</b></span>`:'',
   cert?`<span><b>ServiceNow Certified</b>${a.store.certified_at?' '+monthYear(a.store.certified_at):''}</span>`:'',
   `<span>${esc(a.category)}</span>`,
@@ -151,7 +150,7 @@ export function hubBody(apps){
  const all=sortedApps(apps),sp=spotlightApp(all),c=counts(all);
  const spot=sp?`<article class="uc-spot" aria-labelledby="sp-h"><div><span class="uc-chip">Latest on the Store</span><h2 id="sp-h">${esc(sp.name)}${sp.store.version?` <small>${esc(sp.store.version)}</small>`:''}</h2><p>${esc(sp.tagline)} ${esc(sp.summary)}</p><p class="uc-meta">${isCertified(sp)?`<span><b>ServiceNow Certified</b>${sp.store.certified_at?' '+monthYear(sp.store.certified_at):''}</span>`:''}<span>${esc(sp.store.pricing||sp.pricing)} on the Store</span></p><div class="uc-cta">${primaryCta(sp)}<a class="uc-btn uc-btn-o" href="${appUrl(sp)}">Learn more</a></div></div>${sp.hero_image?img(sp,sp.hero_image,sp.hero_alt||sp.name+' screenshot',{eager:true}):`<div class="uc-stage">${placeholder(sp)}</div>`}</article>`:'';
  const card=a=>{const st=STATUS[a.status]||STATUS.coming_soon,listed=isListed(a);
-  return `<article class="uc-card uc-app"><span class="uc-chip${st.cls}">${st.chip}</span><h3><a href="${appUrl(a)}">${esc(a.name)}</a></h3><p>${esc(a.tagline)}</p><dl><dt>Category</dt><dd>${esc(a.category)}</dd><dt>Pricing</dt><dd>${esc(listed?(a.store.pricing||a.pricing):a.pricing)}</dd>${listed&&a.store.version?`<dt>Version</dt><dd>Version ${esc(a.store.version)}</dd>`:''}</dl><a class="uc-more" href="${appUrl(a)}">${listed?'See the app':'Read more'} ${arrow}</a></article>`};
+  return `<article class="uc-card uc-app"><span class="uc-chip${st.cls}">${st.chip}</span><h3><a href="${appUrl(a)}">${esc(a.name)}</a></h3><p>${esc(a.tagline)}</p><dl><dt>Category</dt><dd>${esc(a.category)}</dd>${listed&&a.store.version?`<dt>Version</dt><dd>Version ${esc(a.store.version)}</dd>`:''}</dl><a class="uc-more" href="${appUrl(a)}">${listed?'See the app':'Read more'} ${arrow}</a></article>`};
  return `<section class="uc-hero hub" aria-labelledby="h1"><div class="uc-wrap">
 <span class="uc-badge"><i></i>ServiceNow Build Partner</span>
 <h1 id="h1">Apps we build for <em>the Now Platform</em></h1>
@@ -178,5 +177,5 @@ export function homeStrip(apps){
 export function homeStage(apps){
  const s=spotlightApp(apps);
  if(!s||!s.hero_image)return '';
- return `<div class="stage"><div class="stage-glow" aria-hidden="true"></div><a class="stage-shot" href="${appUrl(s)}">${img(s,s.hero_image,s.hero_alt||s.name+' screenshot',{eager:true})}</a><div class="stage-fade" aria-hidden="true"></div></div>`;
+ return `<div class="stage"><div class="stage-glow" aria-hidden="true"></div><a class="stage-shot" href="${appUrl(s)}">${img(s,s.hero_image,s.hero_alt||s.name+' screenshot',{eager:true})}</a><div class="stage-fade" aria-hidden="true"></div>${s.slug==='update-center'?'<p class="stage-cap">Update Center: one click updates every instance. Live on the ServiceNow Store.</p>':''}</div>`;
 }

@@ -10,19 +10,19 @@ const ico={
  web:`<svg viewBox="0 0 120 64"><rect x="8" y="6" width="74" height="52" rx="6"/><path d="M8 18h74"/><circle cx="15" cy="12" r="1.6"/><circle cx="21" cy="12" r="1.6"/><path d="M16 28h40M16 36h56M16 44h28"/><rect class="f" x="88" y="16" width="24" height="42" rx="5"/><path d="M96 24h8"/></svg>`};
 const tile=(k,h,p,href)=>`<li class="cap reveal"><div class="cap-v" aria-hidden="true">${ico[k]}</div><h3><a class="stretch" href="${href}">${h}</a></h3><p>${p}</p></li>`;
 export const CAPS=`<section id="capabilities" class="sec" aria-labelledby="cap-h"><div class="wrap">
-<div class="head reveal"><p class="eyebrow">Capabilities</p><h2 class="h-section" id="cap-h">Where we go deep</h2><p class="sub">Six areas of the Now Platform, plus the web and app work around it. Each links to how we scope and deliver it.</p></div>
+<div class="head reveal"><p class="eyebrow">Capabilities</p><h2 class="h-section" id="cap-h">Six places we take the clicks out</h2><p class="sub">Each one is scoped, tested and approved by you before it runs. Each links to how we deliver it.</p></div>
 <ul class="caps">
 ${tile('cmdb','CMDB and CSDM','Classes, identification and reconciliation rules, service maps. Data you can trust before you automate on it.','/services.html#cmdb')}
 ${tile('itam','ITAM','Hardware and software asset lifecycles tied to the CMDB, from receipt to retirement.','/services.html#expertise')}
 ${tile('itsm','ITSM','Incident, problem, change and request flows shaped around your process, not a template.','/services.html#expertise')}
 ${tile('itom','ITOM and Discovery','Discovery, Service Mapping and event management that keep the picture current.','/services.html#itom')}
 ${tile('integ','Integrations','Scripted REST, IntegrationHub spokes and MID servers. Logged, monitored, documented.','/services.html#integration')}
-${tile('ai','AI on the platform','Practical AI features with a person approving anything that changes a record.','/services.html#expertise')}
+${tile('ai','Custom LLM and MCP','Private models and MCP tools into ServiceNow. Read-only by default; every write is approved and on a change record.','/services.html#ai')}
 ${tile('web','Websites and apps','Fast, accessible sites and native apps, built with the same scope-first habits.','/services.html#digital')}
 </ul></div></section>`;
 
 export const PROOF=`<section id="proof" class="sec" aria-labelledby="pf-h"><div class="wrap">
-<div class="head reveal"><p class="eyebrow">Proof, not promises</p><h2 class="h-section" id="pf-h">What you get besides the build</h2><p class="sub">Scoped, tested, documented. These are the formats we hand over. The examples are samples we wrote to show the format, not records from any client.</p></div>
+<div class="head reveal"><p class="eyebrow">Proof, not promises</p><h2 class="h-section" id="pf-h">The proof behind every automation</h2><p class="sub">Scoped, tested, documented. These are the formats we hand over. The examples are samples we wrote to show the format, not records from any client.</p></div>
 <div class="pdocs">
 <article class="pdoc reveal" aria-labelledby="d1"><p class="pdoc-tag"><span class="chip acc">Sample format</span></p><h3 id="d1">Test report</h3>
 <table class="tr"><caption class="sr">Sample ATF suite results</caption><thead><tr><th scope="col">Suite</th><th scope="col">Cases</th><th scope="col">Result</th></tr></thead><tbody>

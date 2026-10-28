@@ -112,3 +112,28 @@
     stage.addEventListener('pointerleave', function(){ stage.style.setProperty('--tx',0); stage.style.setProperty('--ty',0); });
   }
 })();
+
+/* Kinetic hero line: cycles one word at a time. Static list without JS or with reduced motion. */
+(function(){
+  var kw = document.querySelector('[data-kinetic]'); if(!kw) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-nomotion')) return;
+  var items = kw.querySelectorAll('.kw-i'), i = 0, timer;
+  if(items.length < 2) return;
+  kw.classList.add('kw-live');
+  var step = function(){
+    var cur = items[i]; i = (i + 1) % items.length;
+    cur.classList.remove('is-on'); cur.classList.add('is-off');
+    setTimeout(function(){ cur.classList.remove('is-off'); }, 350);
+    items[i].classList.add('is-on');
+  };
+  var start = function(){ if(!timer) timer = setInterval(step, 2400); };
+  var stop = function(){ clearInterval(timer); timer = null; };
+  document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
+  start();
+})();
+
+/* Contact page: /contact.html?topic=llm-mcp pre-fills the message. */
+(function(){
+  var t = new URLSearchParams(location.search).get('topic'), m = document.querySelector('[data-contact-form] textarea[name=message]');
+  if(t === 'llm-mcp' && m && !m.value) m.value = 'Custom LLM and MCP: I would like to talk about ';
+})();
