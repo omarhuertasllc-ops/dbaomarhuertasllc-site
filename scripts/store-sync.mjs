@@ -82,7 +82,7 @@ async function main(){
   if(!changes.length) return;
   const run=(cmd,a)=>execFileSync(cmd,a,{cwd:ROOT,stdio:'inherit'});
   run('npm',['run','build']);
-  run('node',['--test','tests/']);
+  run('npm',['test']);
   if(NO_DEPLOY) return;
   run('npx',['wrangler','deploy','-c','wrangler.staging.jsonc']);
   try{ run('git',['add','src/content/servicenow-apps.json',...data.apps.map(a=>`servicenow/${a.slug}.html`),'servicenow-apps.html','index.html','sitemap.xml']); run('git',['commit','-q','-m',`store-sync: ${changes.map(c=>c.split(':')[0]).join(', ')} updated from the ServiceNow Store\n\nStaged on staging.dbaomarhuertasllc.com; promote with npm run promote.`]) }catch{}

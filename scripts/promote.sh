@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "$0")/.."
 if [ -n "$(git status --porcelain)" ]; then echo "Working tree is not clean. Commit or stash first."; git status --short; exit 1; fi
 npm run build
-node --test tests/
+npm test
 python3 scripts/check_site.py
 npx wrangler deploy -c wrangler.jsonc
 git push origin main
