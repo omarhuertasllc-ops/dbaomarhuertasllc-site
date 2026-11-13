@@ -109,9 +109,10 @@
         "certified_at": "2026-10-27",
         "pricing": "Free",
         "releases": [
+          "Brazil",
           "Australia"
         ],
-        "checked_at": "2026-10-28"
+        "checked_at": "2026-11-02"
       }
     },
     {
@@ -185,7 +186,7 @@
         "version": "1.0.3",
         "certified_at": null,
         "pricing": "Paid",
-        "checked_at": "2026-10-28"
+        "checked_at": "2026-11-02"
       }
     },
     {
@@ -227,7 +228,7 @@
         "version": null,
         "certified_at": null,
         "pricing": "Free",
-        "checked_at": "2026-10-28"
+        "checked_at": "2026-11-02"
       }
     },
     {
@@ -274,7 +275,7 @@
         "version": null,
         "certified_at": null,
         "pricing": "Paid",
-        "checked_at": "2026-10-28"
+        "checked_at": "2026-11-02"
       }
     }
   ]

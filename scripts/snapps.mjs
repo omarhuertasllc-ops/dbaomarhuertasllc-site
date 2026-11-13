@@ -104,7 +104,7 @@ export function snAppBody(a){
   ?`<div class="uc-shot"><div class="uc-bar" aria-hidden="true"><i></i><i></i><i></i></div>${img(a,a.hero_image,a.hero_alt||a.name+' screenshot',{eager:true})}</div>`
   :`<div class="uc-shot uc-stage">${placeholder(a)}</div>`;
  const hero=`<section class="uc-hero" aria-labelledby="h1"><div class="uc-wrap">
-<span class="uc-badge"><i></i>ServiceNow Build Partner &middot; ${st.badge}</span>
+<span class="uc-badge"><i></i>ServiceNow Select Partner, Build &middot; ${st.badge}</span>
 <h1 id="h1">${h1}</h1>
 <p class="uc-lead">${esc(a.summary)}</p>
 <div class="uc-cta">${primaryCta(a)}<a class="uc-btn uc-btn-o" href="#features">See how it works</a></div>
@@ -152,7 +152,7 @@ export function hubBody(apps){
  const card=a=>{const st=STATUS[a.status]||STATUS.coming_soon,listed=isListed(a);
   return `<article class="uc-card uc-app"><span class="uc-chip${st.cls}">${st.chip}</span><h3><a href="${appUrl(a)}">${esc(a.name)}</a></h3><p>${esc(a.tagline)}</p><dl><dt>Category</dt><dd>${esc(a.category)}</dd>${listed&&a.store.version?`<dt>Version</dt><dd>Version ${esc(a.store.version)}</dd>`:''}</dl><a class="uc-more" href="${appUrl(a)}">${listed?'See the app':'Read more'} ${arrow}</a></article>`};
  return `<section class="uc-hero hub" aria-labelledby="h1"><div class="uc-wrap">
-<span class="uc-badge"><i></i>ServiceNow Build Partner</span>
+<span class="uc-badge"><i></i>ServiceNow Select Partner, Build</span>
 <h1 id="h1">Apps we build for <em>the Now Platform</em></h1>
 <p class="uc-lead">Omar Huertas LLC is a Registered ServiceNow Build &amp; Consulting Partner. We package the tools we wish every platform team had as scoped ServiceNow applications, and say plainly where each one stands.</p>
 ${c?`<p class="uc-counts">${c}.</p>`:''}

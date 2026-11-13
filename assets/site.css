@@ -717,3 +717,4 @@ html.a11y-contrast .h-display em,html.a11y-contrast .h-section em{background:non
 @media(min-width:620px){.xgrid{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:960px){.xgrid{grid-template-columns:repeat(3,1fr)}.js .xt:nth-child(3n+2):not(:hover){transition-delay:.08s}.js .xt:nth-child(3n):not(:hover){transition-delay:.16s}}
 html.a11y-nomotion .live .pk,html.a11y-nomotion .ev,html.a11y-nomotion .wv{display:none}
+.sn-badge{margin:24px auto 0;display:flex;justify-content:center}.sn-badge img{width:112px;height:112px;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35)}
