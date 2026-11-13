@@ -88,7 +88,7 @@ function header(path,site=''){
  const nav=site?[['/','&larr; Omar Huertas LLC'],...NAV]:NAV;
  return `<header class="nav" data-nav>
 <div class="nav-in">
-<a class="brand" href="/" aria-label="Omar Huertas LLC home">${MARK('nav')}<span>Omar Huertas LLC</span></a>
+<a class="brand" href="/" aria-label="Omar Huertas LLC home"><span class="wm"><b>OMAR</b> <b class="wm-g">HUERTAS</b> <i>LLC</i></span></a>
 <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Menu" data-nav-toggle><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg></button>
 <div class="nav-panel" id="nav-panel">
 <nav aria-label="Primary"><ul class="links">${nav.map(([h,t])=>`<li><a href="${h}"${cur(h)}>${t}</a></li>`).join('')}</ul></nav>
@@ -102,7 +102,7 @@ function header(path,site=''){
 function footer(path,site=''){
  return `<nav class="family" aria-label="Omar Huertas LLC sites"><div class="family-in"><span>A company of Omar Huertas LLC</span><a href="/"${path==='/index.html'&&!site?' aria-current="page"':''}><i class="llc"></i>dbaomarhuertasllc.com</a><a href="https://albena.ai/" rel="noopener"><i class="alb"></i>albena.ai</a><a href="${STUDIO}" rel="noopener"><i class="stu"></i>Web Design Studio</a></div></nav>
 <footer class="foot"><div class="foot-in">
-<div class="foot-brand"><a class="brand" href="/" aria-label="Omar Huertas LLC home">${MARK('foot',20)}<span>Omar Huertas LLC</span></a><p>Registered ServiceNow Build &amp; Consulting Partner. ServiceNow Store apps, automation and a web design studio.</p><p class="fine">${CITY}. <a href="mailto:${EMAIL}">${EMAIL}</a></p><p class="foot-badge"><img src="/assets/partner/servicenow-select-build-160.webp" srcset="/assets/partner/servicenow-select-build-160.webp 1x, /assets/partner/servicenow-select-build-320.webp 2x" width="104" height="104" alt="ServiceNow Select Partner – Build" loading="lazy" decoding="async"></p></div>
+<div class="foot-brand"><a class="brand" href="/" aria-label="Omar Huertas LLC home"><span class="wm"><b>OMAR</b> <b class="wm-g">HUERTAS</b> <i>LLC</i></span></a><p>Registered ServiceNow Build &amp; Consulting Partner. ServiceNow Store apps, automation and a web design studio.</p><p class="fine">${CITY}. <a href="mailto:${EMAIL}">${EMAIL}</a></p><p class="foot-badge"><img src="/assets/partner/servicenow-select-build-160.webp" srcset="/assets/partner/servicenow-select-build-160.webp 1x, /assets/partner/servicenow-select-build-320.webp 2x" width="104" height="104" alt="ServiceNow Select Partner – Build" loading="lazy" decoding="async"></p></div>
 <nav class="fcols" aria-label="Footer">
 <div><h2>ServiceNow</h2><a href="/services.html">Services</a><a href="/servicenow-apps.html">Store apps</a>${listedApps(SNAPPS).map(a=>`<a href="${appUrl(a)}">${esc(a.name)}</a>`).join('')}<a href="/services.html#cmdb">CMDB and CSDM</a><a href="/services.html#itom">ITOM and discovery</a><a href="/services.html#integration">Integrations</a><a href="/services.html#ai">Custom LLM and MCP</a><a href="/industries.html">Industries</a><a href="/servicenow-lexicon/">The ServiceNow Lexicon</a></div>
 <div><h2>Company</h2><a href="${APPS_URL}">Apps</a><a href="/about.html">About, our story</a><a href="${STUDIO}" rel="noopener">Web Design Studio</a><a href="/support.html">Support</a><a href="/contact.html">Contact</a><a href="https://www.linkedin.com/company/omar-huertas-llc" rel="noopener">LinkedIn</a></div>

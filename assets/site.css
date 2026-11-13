@@ -718,3 +718,9 @@ html.a11y-contrast .h-display em,html.a11y-contrast .h-section em{background:non
 @media(min-width:960px){.xgrid{grid-template-columns:repeat(3,1fr)}.js .xt:nth-child(3n+2):not(:hover){transition-delay:.08s}.js .xt:nth-child(3n):not(:hover){transition-delay:.16s}}
 html.a11y-nomotion .live .pk,html.a11y-nomotion .ev,html.a11y-nomotion .wv{display:none}
 .foot-badge{margin:16px 0 0}.foot-badge img{display:block;width:104px;height:104px;border-radius:12px}
+/* wordmark logo (2026-11-13): OMAR white, HUERTAS site green, LLC small */
+.wm{display:inline-flex;align-items:baseline;gap:.32em;font-weight:900;letter-spacing:-.04em;text-transform:uppercase;line-height:1}
+.wm b{font-weight:900}
+.wm .wm-g{background:linear-gradient(90deg,#2e9e1f,#62d84e);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wm i{font-style:normal;font-weight:700;font-size:.62em;letter-spacing:.3em;opacity:.85}
+.foot-brand .wm{font-size:20px}

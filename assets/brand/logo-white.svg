@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="310" height="200" viewBox="0 0 310 200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E9E1F"/><stop offset="1" stop-color="#62D84E"/></linearGradient></defs>
+<rect width="310" height="200" fill="#FFFFFF"/>
+<text x="155" y="92" text-anchor="middle" font-family="Avenir Next" font-weight="900" font-size="48" fill="#02202F" letter-spacing="-2">OMAR</text>
+<text x="155" y="140" text-anchor="middle" font-family="Avenir Next" font-weight="900" font-size="48" fill="url(#g)" letter-spacing="-2">HUERTAS</text>
+<text x="155" y="168" text-anchor="middle" font-family="Avenir Next" font-weight="700" font-size="14" fill="#02202F" letter-spacing="8">LLC</text></svg>
